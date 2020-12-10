@@ -1,6 +1,8 @@
 package com.geekbrains.spring.lesson6.controllers.rest;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.geekbrains.spring.lesson6.data.CustomerData;
+import com.geekbrains.spring.lesson6.data.ProductData;
 import com.geekbrains.spring.lesson6.entities.Customer;
 import com.geekbrains.spring.lesson6.entities.Order;
 import com.geekbrains.spring.lesson6.entities.views.CustomerView;
@@ -12,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/customers/api/v1")
@@ -42,7 +45,7 @@ public class CustomerRestController {
     }
 
 
-    @GetMapping(value = "/fullCustomer", produces= MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/fullCustomers", produces= MediaType.APPLICATION_JSON_VALUE)
     @JsonView(CustomerView.FullCustomer.class)
     public List<Customer> customersIdNameToJson(){
         return customerService.findAll();
@@ -50,14 +53,28 @@ public class CustomerRestController {
 
 
 
-    @GetMapping(value = "/fullCustomerOrder")
+    @GetMapping(value = "/fullCustomersOrder")
     @JsonView(CustomerView.FullCustomerOrder.class)
-    public List<Customer> fullCustomerOrderToJson(){
+    public List<Customer> fullCustomersOrderToJson(){
         return customerService.findAll();
     }
 
 
+    @GetMapping(value = "/fullCustomerOrder/{id}")
+    @JsonView(CustomerView.FullCustomerOrder.class)
+    public Optional<Customer> fullCustomerOrderToJson(@PathVariable("id") Long id){
+        return customerService.findById(id);
+    }
 
+
+
+    @GetMapping(value = "/jsonData/{id}",produces= MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public CustomerData customerDataToJson(
+            @PathVariable Long id
+    ){
+        return customerFacade.getCustomerById(id);
+    }
 
 
 
